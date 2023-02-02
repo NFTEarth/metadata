@@ -8,7 +8,7 @@
 function setUpDatadogTracing() {
   const { tracer: Tracer } = require('dd-trace')
   const tracer = Tracer.init({
-    // Your options here.
+    service: 'metadata',
     runtimeMetrics: true,
     logInjection: true,
   })
