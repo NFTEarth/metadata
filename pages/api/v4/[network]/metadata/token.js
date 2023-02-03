@@ -8,6 +8,7 @@ import { extendMetadata } from "../../../../../src/extend";
 import * as opensea from "../../../../../src/fetchers/opensea";
 import * as rarible from "../../../../../src/fetchers/rarible";
 import * as simplehash from "../../../../../src/fetchers/simplehash";
+import * as alchemy from "../../../../../src/fetchers/alchemy";
 import * as centerdev from "../../../../../src/fetchers/centerdev";
 import * as soundxyz from "../../../../../src/fetchers/soundxyz";
 
@@ -25,6 +26,9 @@ const api = async (req, res) => {
 
     let chainId = 1;
     switch (network) {
+      case "mainnet":
+        chainId = 1;
+        break;
       case "optimism":
         chainId = 10;
         break;
@@ -41,13 +45,15 @@ const api = async (req, res) => {
 
     // Validate indexing method and set up provider
     const method = req.query.method;
-    if (!["opensea", "rarible", "simplehash", "centerdev", "soundxyz"].includes(method)) {
+    if (!["opensea", "rarible", "alchemy", "simplehash", "centerdev", "soundxyz"].includes(method)) {
       throw new Error("Unknown method");
     }
 
     let provider = opensea;
     if (method === "rarible") {
       provider = rarible;
+    } else if (method === "alchemy") {
+      provider = alchemy;
     } else if (method === "simplehash") {
       provider = simplehash;
     } else if (method === "centerdev") {
@@ -117,6 +123,9 @@ const api = async (req, res) => {
       throw new Error("Too many tokens");
     }
     if (method === "centerdev" && tokens.length > 100) {
+      throw new Error("Too many tokens");
+    }
+    if (method === "alchemy" && tokens.length > 100) {
       throw new Error("Too many tokens");
     }
 

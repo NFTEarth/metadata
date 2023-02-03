@@ -9,6 +9,7 @@ import { extendCollectionMetadata } from "../../../../../src/extend";
 import * as opensea from "../../../../../src/fetchers/opensea";
 import * as rarible from "../../../../../src/fetchers/rarible";
 import * as simplehash from "../../../../../src/fetchers/simplehash";
+import * as alchemy from "../../../../../src/fetchers/alchemy";
 import * as centerdev from "../../../../../src/fetchers/centerdev";
 import * as soundxyz from "../../../../../src/fetchers/soundxyz";
 
@@ -24,14 +25,17 @@ const api = async (req, res) => {
 
     let chainId = 1;
     switch (network) {
-      case "optimism":
-        chainId = 10;
+      case "mainnet":
+        chainId = 1;
         break;
       case "rinkeby":
         chainId = 4;
         break;
       case "goerli":
         chainId = 5;
+        break;
+      case "optimism":
+        chainId = 10;
         break;
       case "polygon":
         chainId = 137;
@@ -41,7 +45,7 @@ const api = async (req, res) => {
     // Validate indexing method and set up provider
     const method = req.query.method;
     if (
-      !["opensea", "rarible", "simplehash", "centerdev", "soundxyz"].includes(
+      !["opensea", "rarible", "alchemy", "simplehash", "centerdev", "soundxyz"].includes(
         method
       )
     ) {
@@ -51,6 +55,8 @@ const api = async (req, res) => {
     let provider = opensea;
     if (method === "rarible") {
       provider = rarible;
+    } else if (method === "alchemy") {
+      provider = alchemy;
     } else if (method === "simplehash") {
       provider = simplehash;
     } else if (method === "centerdev") {
