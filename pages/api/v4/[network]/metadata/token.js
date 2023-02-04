@@ -167,10 +167,10 @@ const api = async (req, res) => {
         ...(await Promise.all(
           customTokens.map((token) => customHandleToken(chainId, token))
         )),
-      ];
+      ]
     }
 
-    return res.status(200).json({ metadata });
+    return res.status(200).json({ metadata: metadata.filter(Boolean) });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: error.message });
