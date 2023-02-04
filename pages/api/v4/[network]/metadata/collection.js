@@ -56,7 +56,7 @@ const api = async (req, res) => {
     if (method === "rarible") {
       provider = rarible;
     } else if (method === "alchemy") {
-      provider = alchemy;
+      provider = simplehash;
     } else if (method === "simplehash") {
       provider = simplehash;
     } else if (method === "centerdev") {
