@@ -12,6 +12,7 @@ import * as bayc from "./bayc";
 import * as asyncBlueprints from "./async-blueprints";
 import * as tfoust from './tfoust';
 import * as dopewars from './dopewars';
+import * as optimismQuest from './optimism-quest';
 import * as sharedContracts from "./shared-contracts";
 
 export const extendCollectionMetadata = async (chainId, metadata) => {
@@ -110,3 +111,6 @@ extend["137,0x45308788743bbdae5de7ba9e565c0502d0ebb81f"] = tfoust;
 
 // Dope Wars Hustlers
 extend["10,0xdbfeaae58b6da8901a8a40ba0712beb2ee18368e"] = dopewars;
+
+// Optimism Quest
+extend["10,0xfa14e1157f35e1dad95dc3f822a9d18c40e360e2"] = optimismQuest;
