@@ -36,11 +36,11 @@ async function getToken(id) {
             return {"token_id":id,"skip":true}
           }
           let attributes = response.data.attributes.reduce((result,trait) => {
-            if(trait.trait_type!="Created Date") {
+            if(trait.trait_type!=="Created Date") {
               result.push({
                 "key": trait.trait_type,
                 "value": trait.value,
-                "kind": trait.trait_type=="Length" ? "range" : "date"
+                "kind": trait.trait_type==="Length" ? "range" : "date"
               })
             }
             return result
