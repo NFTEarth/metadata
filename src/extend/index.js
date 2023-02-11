@@ -31,9 +31,9 @@ export const extendCollectionMetadata = async (chainId, metadata) => {
 export const extendMetadata = async (chainId, metadata) => {
   if (metadata) {
     metadata.attributes = (metadata.attributes || []).map((trait) => ({
-      key: trait.trait_type,
+      key: trait.key,
       value: trait.value,
-      kind: trait.trait_type === "birthday" ? "range" : trait.kind
+      kind: trait.key === "birthday" ? "range" : trait.kind
     }));
 
     if (Boolean(extend[`${chainId},${metadata.contract}`])) {

@@ -1,9 +1,9 @@
 export const extend = async (_chainId, metadata) => {
   try {
     metadata.attributes = (metadata.attributes || []).map((trait) => ({
-      key: trait.trait_type,
+      key: trait.key,
       value: trait.value,
-      kind: trait.trait_type === "birthday" ? "range" : trait.trait_type
+      kind: trait.key === "birthday" ? "range" : trait.kind
     }));
 
     return { ...metadata };
