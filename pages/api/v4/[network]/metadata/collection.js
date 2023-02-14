@@ -20,7 +20,7 @@ const api = async (req, res) => {
     if (
       !["mainnet", "rinkeby", "goerli", "optimism", "arbitrum", "polygon"].includes(network)
     ) {
-      throw new Error("Unknown network");
+      throw new Error(`Unknown network : ${req.query.network}`);
     }
 
     let chainId = 1;
