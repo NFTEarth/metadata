@@ -34,7 +34,7 @@ export const extendMetadata = async (chainId, metadata) => {
   if (metadata) {
     metadata.attributes = (metadata.attributes || []).map((trait) => ({
       key: trait.key,
-      value: trait.value,
+      value: rangeKeys.includes(trait.key) ? parseInt(trait.value) : trait.value,
       kind: rangeKeys.includes(trait.key) ? "range" : trait.kind
     }));
 
