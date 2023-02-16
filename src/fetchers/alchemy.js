@@ -15,6 +15,8 @@ const getNetworkName = (chainId) => {
     network = "opt-mainnet";
   } else if (chainId === 137) {
     network = "polygon";
+  } else if (chainId === 42161) {
+    network = "arb-mainnet";
   } else {
     throw new Error("Unsupported chain id");
   }
@@ -29,7 +31,7 @@ export const fetchCollection = async (chainId, { contract }) => {
     const url = `https://${network}.g.alchemy.com/nft/v2/${process.env.ALCHEMY_API_KEY}/getContractMetadata?contractAddress=${contract}`;
     const data = await axios
       .get(url, )
-      .then((response) => response.data.contractMetadata);
+      .then((response) => response.data);
 
     const slug = slugify(data.name, { lower: true });
     const metadata = data.opensea || {};
@@ -127,6 +129,7 @@ export const fetchContractTokens = async (chainId, contract, continuation) => {
 
   const searchParams = new URLSearchParams();
   searchParams.append('contractAddress', contract);
+  searchParams.append('withMetadata', true);
   if (continuation) {
     searchParams.append("startToken", continuation);
   }
