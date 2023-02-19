@@ -29,12 +29,12 @@ export const extendCollectionMetadata = async (chainId, metadata) => {
 };
 
 const getKindByKey = (key, kind) => {
-  if (['Serial'].includes(key)) {
-    return 'number'
+  if (['Affinity'].includes(key)) {
+    return 'range';
   }
 
-  if (['birthday'].includes(key)) {
-    return 'date'
+  if (['Serial', 'Character Number'].includes(key)) {
+    return 'number'
   }
 
   return kind;
