@@ -28,14 +28,24 @@ export const extendCollectionMetadata = async (chainId, metadata) => {
   }
 };
 
-const rangeKeys = ['Serial','birthday'];
+const getKindByKey = (key, kind) => {
+  if (['Serial'].includes(key)) {
+    return 'number'
+  }
+
+  if (['birthday'].includes(key)) {
+    return 'date'
+  }
+
+  return kind;
+}
 
 export const extendMetadata = async (chainId, metadata) => {
   if (metadata) {
     metadata.attributes = (metadata.attributes || []).map((trait) => ({
       key: trait.key,
-      value: rangeKeys.includes(trait.key) ? parseInt(trait.value) : trait.value,
-      kind: rangeKeys.includes(trait.key) ? "range" : trait.kind
+      value: trait.value,
+      kind: getKindByKey(trait.key, trait.kind)
     }));
 
     if (Boolean(extend[`${chainId},${metadata.contract}`])) {
