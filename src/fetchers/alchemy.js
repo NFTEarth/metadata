@@ -29,9 +29,7 @@ export const fetchCollection = async (chainId, { contract }) => {
     const network = getNetworkName(chainId);
 
     const url = `https://${network}.g.alchemy.com/nft/v2/${process.env.ALCHEMY_API_KEY}/getContractMetadata?contractAddress=${contract}`;
-    const data = await axios
-      .get(url, )
-      .then((response) => response.data);
+    const data = await axios.get(url).then((response) => response.data);
 
     const slug = slugify(data.name, { lower: true });
     const metadata = data.opensea || {};
@@ -59,9 +57,7 @@ export const fetchCollection = async (chainId, { contract }) => {
         "alchemy-fetcher",
         `fetchCollection error. chainId:${chainId}, contract:${contract}, message:${
           error.message
-        },  status:${error.response?.status}, data:${JSON.stringify(
-          error.response?.data
-        )}`
+        },  status:${error.response?.status}, data:${JSON.stringify(error.response?.data)}`
       );
 
       const name = await new Contract(
@@ -91,31 +87,25 @@ export const fetchTokens = async (chainId, tokens) => {
   const network = getNetworkName(chainId);
 
   const searchParams = new URLSearchParams();
-  const nftIds = tokens.map(
-    ({ contract, tokenId }) => `${network}.${contract}.${tokenId}`
-  );
+  const nftIds = tokens.map(({ contract, tokenId }) => `${network}.${contract}.${tokenId}`);
   searchParams.append("nft_ids", nftIds.join(","));
 
   const url = `https://${network}.g.alchemy.com/nft/v2/${process.env.ALCHEMY_API_KEY}/getNFTMetadataBatch`;
   const data = await axios
     .post(url, {
-      tokens: tokens.map(({ contract, tokenId, tokenKind }) => (
-        {
-          contractAddress: contract,
-          tokenId,
-          tokenType: tokenKind
-        }
-      ))
+      tokens: tokens.map(({ contract, tokenId, tokenKind }) => ({
+        contractAddress: contract,
+        tokenId,
+        tokenType: tokenKind,
+      })),
     })
     .then((response) => response.data)
     .catch((error) => {
       logger.error(
         "alchemy-fetcher",
-        `fetchTokens error. chainId:${chainId}, message:${
-          error.message
-        },  status:${error.response?.status}, data:${JSON.stringify(
-          error.response?.data
-        )}`
+        `fetchTokens error. chainId:${chainId}, message:${error.message},  status:${
+          error.response?.status
+        }, data:${JSON.stringify(error.response?.data)}`
       );
 
       throw error;
@@ -128,16 +118,16 @@ export const fetchContractTokens = async (chainId, contract, continuation) => {
   const network = getNetworkName(chainId);
 
   const searchParams = new URLSearchParams();
-  searchParams.append('contractAddress', contract);
-  searchParams.append('withMetadata', true);
+  searchParams.append("contractAddress", contract);
+  searchParams.append("withMetadata", true);
   if (continuation) {
     searchParams.append("startToken", continuation);
   }
 
-  const url = `https://${network}.g.alchemy.com/nft/v2/${process.env.ALCHEMY_API_KEY}/getNFTsForCollection?${searchParams.toString()}`;
-  const data = await axios
-    .get(url)
-    .then((response) => response.data);
+  const url = `https://${network}.g.alchemy.com/nft/v2/${
+    process.env.ALCHEMY_API_KEY
+  }/getNFTsForCollection?${searchParams.toString()}`;
+  const data = await axios.get(url).then((response) => response.data);
 
   return {
     continuation: data.nextToken,

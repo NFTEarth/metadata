@@ -1,9 +1,6 @@
 import _ from "lodash";
 
-import {
-  customHandleCollection,
-  hasCustomCollectionHandler,
-} from "../../../../../src/custom";
+import { customHandleCollection, hasCustomCollectionHandler } from "../../../../../src/custom";
 import { extendCollectionMetadata } from "../../../../../src/extend";
 
 import * as opensea from "../../../../../src/fetchers/opensea";
@@ -17,9 +14,7 @@ const api = async (req, res) => {
   try {
     // Validate network and detect chain id
     const network = req.query.network;
-    if (
-      !["mainnet", "rinkeby", "goerli", "optimism", "arbitrum", "polygon"].includes(network)
-    ) {
+    if (!["mainnet", "rinkeby", "goerli", "optimism", "arbitrum", "polygon"].includes(network)) {
       throw new Error(`Unknown network : ${req.query.network}`);
     }
 
@@ -48,9 +43,7 @@ const api = async (req, res) => {
     // Validate indexing method and set up provider
     const method = req.query.method;
     if (
-      !["opensea", "rarible", "alchemy", "simplehash", "centerdev", "soundxyz"].includes(
-        method
-      )
+      !["opensea", "rarible", "alchemy", "simplehash", "centerdev", "soundxyz"].includes(method)
     ) {
       throw new Error("Unknown method");
     }
@@ -78,6 +71,10 @@ const api = async (req, res) => {
       throw new Error(`Unknown contract ${contract}`);
     }
 
+    if (!tokenId) {
+      throw new Error(`Unknown tokenId ${tokenId}`);
+    }
+
     let collection = null;
     if (hasCustomCollectionHandler(chainId, contract)) {
       collection = await customHandleCollection(chainId, { contract, tokenId });
@@ -93,7 +90,7 @@ const api = async (req, res) => {
     }
 
     return res.status(200).json({
-      collection: await extendCollectionMetadata(chainId, collection),
+      collection: await extendCollectionMetadata(chainId, collection, tokenId),
     });
   } catch (error) {
     return res.status(500).json({ error: `Internal error: ${error}` });
