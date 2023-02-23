@@ -58,6 +58,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
         externalUrl: data.external_url,
         twitterUsername: data.twitter_username,
       },
+
       contract,
       tokenIdRange: null,
       tokenSetId: `contract:${contract}`,
