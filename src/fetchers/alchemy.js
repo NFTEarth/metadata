@@ -47,7 +47,7 @@ export const fetchCollection = async (chainId, { contract }) => {
     const apiKey = getAPIKey(chainId);
 
     const url = `https://${network}.g.alchemy.com/nft/v2/${apiKey}/getContractMetadata?contractAddress=${contract}`;
-    const data = await axios.get(url).then((response) => response.data);
+    const data = await axios.get(url).then((response) => response.data.contractMetadata);
 
     const slug = slugify(data.name, { lower: true });
     const metadata = data.opensea || {};
@@ -112,10 +112,10 @@ export const fetchTokens = async (chainId, tokens) => {
   const url = `https://${network}.g.alchemy.com/nft/v2/${apiKey}/getNFTMetadataBatch`;
   const data = await axios
     .post(url, {
-      tokens: tokens.map(({ contract, tokenId, tokenKind }) => ({
+      tokens: tokens.map(({ contract, tokenId, tokenKind: tokenType }) => ({
         contractAddress: contract,
         tokenId,
-        tokenType: tokenKind,
+        tokenType,
       })),
     })
     .then((response) => response.data)
