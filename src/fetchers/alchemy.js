@@ -24,11 +24,29 @@ const getNetworkName = (chainId) => {
   return network;
 };
 
+const getAPIKey = (chainId) => {
+  let network;
+  if (chainId === 1) {
+    network = process.env.ALCHEMY_API_KEY;
+  } else if (chainId === 10) {
+    network = process.env.OPT_ALCHEMY_API_KEY;
+  } else if (chainId === 137) {
+    network = process.env.MATIC_ALCHEMY_API_KEY;
+  } else if (chainId === 42161) {
+    network = process.env.ARB_ALCHEMY_API_KEY;
+  } else {
+    throw new Error("Unsupported chain id");
+  }
+
+  return network;
+};
+
 export const fetchCollection = async (chainId, { contract }) => {
   try {
     const network = getNetworkName(chainId);
+    const apiKey = getAPIKey(chainId);
 
-    const url = `https://${network}.g.alchemy.com/nft/v2/${process.env.ALCHEMY_API_KEY}/getContractMetadata?contractAddress=${contract}`;
+    const url = `https://${network}.g.alchemy.com/nft/v2/${apiKey}/getContractMetadata?contractAddress=${contract}`;
     const data = await axios.get(url).then((response) => response.data);
 
     const slug = slugify(data.name, { lower: true });
@@ -85,12 +103,13 @@ export const fetchCollection = async (chainId, { contract }) => {
 
 export const fetchTokens = async (chainId, tokens) => {
   const network = getNetworkName(chainId);
+  const apiKey = getAPIKey(chainId);
 
   const searchParams = new URLSearchParams();
   const nftIds = tokens.map(({ contract, tokenId }) => `${network}.${contract}.${tokenId}`);
   searchParams.append("nft_ids", nftIds.join(","));
 
-  const url = `https://${network}.g.alchemy.com/nft/v2/${process.env.ALCHEMY_API_KEY}/getNFTMetadataBatch`;
+  const url = `https://${network}.g.alchemy.com/nft/v2/${apiKey}/getNFTMetadataBatch`;
   const data = await axios
     .post(url, {
       tokens: tokens.map(({ contract, tokenId, tokenKind }) => ({
@@ -116,6 +135,7 @@ export const fetchTokens = async (chainId, tokens) => {
 
 export const fetchContractTokens = async (chainId, contract, continuation) => {
   const network = getNetworkName(chainId);
+  const apiKey = getAPIKey(chainId);
 
   const searchParams = new URLSearchParams();
   searchParams.append("contractAddress", contract);
@@ -124,9 +144,7 @@ export const fetchContractTokens = async (chainId, contract, continuation) => {
     searchParams.append("startToken", continuation);
   }
 
-  const url = `https://${network}.g.alchemy.com/nft/v2/${
-    process.env.ALCHEMY_API_KEY
-  }/getNFTsForCollection?${searchParams.toString()}`;
+  const url = `https://${network}.g.alchemy.com/nft/v2/${apiKey}/getNFTsForCollection?${searchParams.toString()}`;
   const data = await axios.get(url).then((response) => response.data);
 
   return {

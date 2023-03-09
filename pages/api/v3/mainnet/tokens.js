@@ -23,7 +23,7 @@ const getOpenSeaTokensMetadata = async (contract, tokenIds) => {
 
   const metadata = [];
   for (const asset of data.assets) {
-    metadata.push(opensea.parseAssets(asset));
+    metadata.push(opensea.parse(asset));
   }
 
   return metadata;
