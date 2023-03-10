@@ -3,7 +3,7 @@ import _ from "lodash";
 export const parse = (asset) => {
   return {
     contract: asset.contract.address,
-    tokenId: `${parseInt(asset.id.tokenId, 16)}`,
+    tokenId: asset.id.tokenId,
     name: asset.title,
     collection: _.toLower(asset.contract.address),
     // Token descriptions are a waste of space for most collections we deal with
