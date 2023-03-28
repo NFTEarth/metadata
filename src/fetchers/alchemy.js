@@ -15,6 +15,8 @@ const getNetworkName = (chainId) => {
     network = "opt-mainnet";
   } else if (chainId === 137) {
     network = "polygon";
+  } else if (chainId === 324) {
+    network = "polygonzkevm-mainnet";
   } else if (chainId === 42161) {
     network = "arb-mainnet";
   } else {
@@ -32,6 +34,8 @@ const getAPIKey = (chainId) => {
     network = process.env.OPT_ALCHEMY_API_KEY;
   } else if (chainId === 137) {
     network = process.env.MATIC_ALCHEMY_API_KEY;
+  } else if (chainId === 324) {
+    network = process.env.ZKSYNC_ALCHEMY_API_KEY;
   } else if (chainId === 42161) {
     network = process.env.ARB_ALCHEMY_API_KEY;
   } else {

@@ -35,6 +35,9 @@ const api = async (req, res) => {
       case "polygon":
         chainId = 137;
         break;
+      case "zksync":
+        chainId = 324;
+        break;
       case "arbitrum":
         chainId = 42161;
         break;
