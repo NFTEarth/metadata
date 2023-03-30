@@ -156,4 +156,3 @@ export const fetchContractTokens = async (chainId, contract, continuation) => {
     metadata: data.nfts.map(parse).filter(Boolean),
   };
 };
-src/fetchers/alchemy.js
