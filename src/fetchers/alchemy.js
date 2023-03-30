@@ -15,7 +15,7 @@ const getNetworkName = (chainId) => {
     network = "opt-mainnet";
   } else if (chainId === 137) {
     network = "polygon-mainnet";
-  } else if (chainId === 324) {
+  } else if (chainId === 1101) {
     network = "polygonzkevm-mainnet";
   } else if (chainId === 42161) {
     network = "arb-mainnet";
@@ -156,3 +156,4 @@ export const fetchContractTokens = async (chainId, contract, continuation) => {
     metadata: data.nfts.map(parse).filter(Boolean),
   };
 };
+src/fetchers/alchemy.js
