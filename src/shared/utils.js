@@ -1,4 +1,3 @@
-import { providers } from 'ethers'
 import { UrlJsonRpcProvider } from "@ethersproject/providers/lib/url-json-rpc-provider";
 import { showThrottleMessage } from "@ethersproject/providers/lib/formatter";
 import { AlchemyWebSocketProvider } from "@ethersproject/providers/lib/alchemy-provider";

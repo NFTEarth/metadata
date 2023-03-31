@@ -25,6 +25,11 @@ const fetchContract = async (chainId, contract) => {
     erc11555Metadata = await nftContract.functions.uri(1).catch(() => null);
   }
 
+  logger.info('nfteath-fetcher', {
+    erc721Metadata,
+    erc11555Metadata
+  })
+
   const metadataUri = (erc721Metadata || erc11555Metadata || '').replace(/^ipfs?:\/\//, 'https://cloudflare-ipfs.com/ipfs/');
 
   const { data } = await axios.get(metadataUri);
@@ -52,6 +57,10 @@ const fetchToken = async (chainId, contract, tokenId) => {
   const contractName = await nftContract.name().catch(() => null);
   const erc721Metadata = await nftContract.functions.tokenURI(tokenId).catch(() => null);
   const erc11555Metadata = await nftContract.functions.uri(tokenId).catch(() => null);
+  logger.info('nfteath-fetcher', {
+    erc721Metadata,
+    erc11555Metadata
+  })
   const metadataUri = (erc721Metadata || erc11555Metadata || '').replace(/^ipfs?:\/\//, 'https://cloudflare-ipfs.com/ipfs/');
 
   const { data } = await axios.get(metadataUri);
