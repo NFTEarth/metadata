@@ -55,6 +55,13 @@ const fetchToken = async (chainId, contract, tokenId) => {
 
   const { data } = await axios.get(metadataUri);
 
+  logger.info('nftearth-fetcher', JSON.stringify({
+    chainId,
+    contract,
+    tokenId,
+    data
+  }))
+
   return {
     id: tokenId,
     contract: {
@@ -67,10 +74,16 @@ const fetchToken = async (chainId, contract, tokenId) => {
 
 export const fetchCollection = async (chainId, { contract }) => {
   try {
-    let data = fetchToken(chainId, contract, 0).then(parse).catch(() => null);
+    let data = await fetchToken(chainId, contract, 0).then(parse).catch(() => null);
     if (data === null) {
-      data = fetchToken(chainId, contract, 1).then(parse).catch(() => {});
+      data = await fetchToken(chainId, contract, 1).then(parse).catch(() => {});
     }
+
+    logger.info('nftearth-fetcher', JSON.stringify({
+      chainId,
+      contract,
+      data
+    }))
 
     const slug = slugify(data.name, { lower: true });
     const metadata = data.metadata || {};
@@ -78,7 +91,7 @@ export const fetchCollection = async (chainId, { contract }) => {
     return {
       id: contract,
       slug,
-      name: data.name,
+      name: data.contract.name,
       community: null,
       metadata: {
         description: metadata.description || null,
@@ -92,15 +105,10 @@ export const fetchCollection = async (chainId, { contract }) => {
       tokenIdRange: null,
       tokenSetId: `contract:${contract}`,
     };
-  } catch {
-    try {
-      logger.error(
-        "nftearth-fetcher",
-        `fetchCollection error. chainId:${chainId}, contract:${contract}, message:${
-          error.message
-        },  status:${error.response?.status}, data:${JSON.stringify(error.response?.data)}`
-      );
+  } catch(e) {
+    logger.error('nftearth-fetcher', e.message)
 
+    try {
       const name = await new Contract(
         contract,
         new Interface(["function name() view returns (string)"]),
@@ -118,7 +126,8 @@ export const fetchCollection = async (chainId, { contract }) => {
         tokenSetId: `contract:${contract}`,
         isFallback: true,
       };
-    } catch {
+    } catch (e) {
+      logger.error('nftearth-fetcher', e.message)
       return null;
     }
   }
