@@ -4,7 +4,7 @@ import { Interface } from "ethers/lib/utils";
 import slugify from "slugify";
 
 import { parse } from "../parsers/alchemy";
-import { getProvider, getNetworkName, getAPIKey } from "../shared/utils";
+import { getProvider } from "../shared/utils";
 import { logger } from "../shared/logger";
 import _ from "lodash";
 
@@ -18,8 +18,13 @@ const fetchContract = async (chainId, contract) => {
 
   const contractName = await nftContract.functions.name().call().catch(() => null);
   const totalSupply = await nftContract.functions.totalSupply().call().catch(() => null);
-  const erc721Metadata = await nftContract.functions.tokenURI(0).call().catch(() => null);
-  const erc11555Metadata = await nftContract.functions.uri(0).call().catch(() => null);
+  let erc721Metadata = await nftContract.functions.tokenURI(0).call().catch(() => null);
+  let erc11555Metadata = await nftContract.functions.uri(0).call().catch(() => null);
+  if (erc721Metadata === null && erc11555Metadata === null) {
+    erc721Metadata = await nftContract.functions.tokenURI(1).call().catch(() => null);
+    erc11555Metadata = await nftContract.functions.uri(1).call().catch(() => null);
+  }
+
   const metadataUri = (erc721Metadata || erc11555Metadata).replace(/^ipfs?:\/\//, 'https://cloudflare-ipfs.com/ipfs/');
 
   const { data } = await axios.get(metadataUri);
@@ -63,7 +68,11 @@ const fetchToken = async (chainId, contract, tokenId) => {
 
 export const fetchCollection = async (chainId, { contract }) => {
   try {
-    const data = fetchToken(chainId, contract, 0).then(parse);
+    let data = fetchToken(chainId, contract, 0).then(parse).catch(() => null);
+    if (data === null) {
+      data = fetchToken(chainId, contract, 1).then(parse).catch(() => {});
+    }
+
     const slug = slugify(data.name, { lower: true });
     const metadata = data.metadata || {};
 
