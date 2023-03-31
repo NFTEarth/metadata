@@ -4,46 +4,8 @@ import { Interface } from "ethers/lib/utils";
 import slugify from "slugify";
 
 import { parse } from "../parsers/alchemy";
-import { getProvider } from "../shared/utils";
+import { getProvider, getAPIKey, getNetworkName } from "../shared/utils";
 import { logger } from "../shared/logger";
-
-const getNetworkName = (chainId) => {
-  let network;
-  if (chainId === 1) {
-    network = "eth-mainnet";
-  } else if (chainId === 10) {
-    network = "opt-mainnet";
-  } else if (chainId === 137) {
-    network = "polygon-mainnet";
-  } else if (chainId === 1101) {
-    network = "polygonzkevm-mainnet";
-  } else if (chainId === 42161) {
-    network = "arb-mainnet";
-  } else {
-    throw new Error("Unsupported chain id");
-  }
-
-  return network;
-};
-
-const getAPIKey = (chainId) => {
-  let network;
-  if (chainId === 1) {
-    network = process.env.ALCHEMY_API_KEY;
-  } else if (chainId === 10) {
-    network = process.env.OPT_ALCHEMY_API_KEY;
-  } else if (chainId === 137) {
-    network = process.env.MATIC_ALCHEMY_API_KEY;
-  } else if (chainId === 1101) {
-    network = process.env.ZKEVM_ALCHEMY_API_KEY;
-  } else if (chainId === 42161) {
-    network = process.env.ARB_ALCHEMY_API_KEY;
-  } else {
-    throw new Error("Unsupported chain id");
-  }
-
-  return network;
-};
 
 export const fetchCollection = async (chainId, { contract }) => {
   try {

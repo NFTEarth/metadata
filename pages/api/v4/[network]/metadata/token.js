@@ -11,6 +11,7 @@ import * as simplehash from "../../../../../src/fetchers/simplehash";
 import * as alchemy from "../../../../../src/fetchers/alchemy";
 import * as centerdev from "../../../../../src/fetchers/centerdev";
 import * as soundxyz from "../../../../../src/fetchers/soundxyz";
+import * as nftearth from "../../../../../src/fetchers/nftearth";
 
 import { RequestWasThrottledError } from "../../../../../src/fetchers/errors";
 import { ValidationError } from "../../../../../src/shared/errors";
@@ -64,6 +65,8 @@ const api = async (req, res) => {
       provider = rarible;
     } else if (method === "alchemy") {
       provider = alchemy;
+    } else if (method === "nftearth") {
+      provider = nftearth;
     } else if (method === "simplehash") {
       provider = simplehash;
     } else if (method === "centerdev") {

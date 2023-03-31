@@ -9,6 +9,7 @@ import * as simplehash from "../../../../../src/fetchers/simplehash";
 import * as alchemy from "../../../../../src/fetchers/alchemy";
 import * as centerdev from "../../../../../src/fetchers/centerdev";
 import * as soundxyz from "../../../../../src/fetchers/soundxyz";
+import * as nftearth from "../../../../../src/fetchers/nftearth";
 
 const api = async (req, res) => {
   try {
@@ -46,7 +47,7 @@ const api = async (req, res) => {
     // Validate indexing method and set up provider
     const method = req.query.method;
     if (
-      !["opensea", "rarible", "alchemy", "simplehash", "centerdev", "soundxyz"].includes(method)
+      !["opensea", "rarible", "alchemy", "nftearth", "simplehash", "centerdev", "soundxyz"].includes(method)
     ) {
       throw new Error("Unknown method");
     }
@@ -56,6 +57,8 @@ const api = async (req, res) => {
       provider = rarible;
     } else if (method === "alchemy") {
       provider = alchemy;
+    } else if (method === "nftearth") {
+      provider = nftearth;
     } else if (method === "simplehash") {
       provider = simplehash;
     } else if (method === "centerdev") {
