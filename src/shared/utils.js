@@ -1,6 +1,9 @@
 import { UrlJsonRpcProvider } from "@ethersproject/providers/lib/url-json-rpc-provider";
 import { showThrottleMessage } from "@ethersproject/providers/lib/formatter";
 import { AlchemyWebSocketProvider } from "@ethersproject/providers/lib/alchemy-provider";
+import { Logger } from "@ethersproject/logger";
+import { version } from "@ethersproject/providers/lib/_version";
+const logger = new Logger(version);
 
 const defaultApiKey = "_gg7wSSi0KMBsdKnGVfHDueq6xMB9EkC"
 
