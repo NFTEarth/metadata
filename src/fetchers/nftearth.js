@@ -3,7 +3,7 @@ import { Contract } from "ethers";
 import { Interface } from "ethers/lib/utils";
 import slugify from "slugify";
 
-import { parse } from "../parsers/alchemy";
+import { parse } from "../parsers/nftearth";
 import { getProvider } from "../shared/utils";
 import { logger } from "../shared/logger";
 import _ from "lodash";
@@ -52,15 +52,7 @@ const fetchToken = async (chainId, contract, tokenId) => {
   const erc721Metadata = await nftContract.functions.tokenURI(tokenId).then(res => res?.[0] || null).catch(() => null);
   const erc1155Metadata = await nftContract.functions.uri(tokenId).then(res => res?.[0] || null).catch(() => null);
   const metadataUri = (erc721Metadata || erc1155Metadata || '').replace(/^ipfs?:\/\//, 'https://cloudflare-ipfs.com/ipfs/');
-
   const { data } = await axios.get(metadataUri);
-
-  logger.info('nftearth-fetcher', JSON.stringify({
-    chainId,
-    contract,
-    tokenId,
-    data
-  }))
 
   return {
     id: tokenId,
@@ -74,19 +66,13 @@ const fetchToken = async (chainId, contract, tokenId) => {
 
 export const fetchCollection = async (chainId, { contract }) => {
   try {
-    let data = await fetchToken(chainId, contract, 0).then(parse).catch(() => null);
+    let data = await fetchToken(chainId, contract, 0).catch(() => null);
     if (data === null) {
-      data = await fetchToken(chainId, contract, 1).then(parse).catch(() => {});
+      data = await fetchToken(chainId, contract, 1).catch(() => {});
     }
 
-    logger.info('nftearth-fetcher', JSON.stringify({
-      chainId,
-      contract,
-      data
-    }))
-
-    const slug = slugify(data.name, { lower: true });
-    const metadata = data.metadata || {};
+    const slug = slugify(data.contract.name, { lower: true });
+    const metadata = parse(data) || {};
 
     return {
       id: contract,
