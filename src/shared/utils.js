@@ -1,3 +1,4 @@
+import { providers } from 'ethers'
 import { UrlJsonRpcProvider } from "@ethersproject/providers/lib/url-json-rpc-provider";
 import { showThrottleMessage } from "@ethersproject/providers/lib/formatter";
 import { AlchemyWebSocketProvider } from "@ethersproject/providers/lib/alchemy-provider";
@@ -90,6 +91,25 @@ export const getNetworkName = (chainId) => {
   return network;
 };
 
+export const getEthNetworkName = (chainId) => {
+  let network;
+  if (chainId === 1) {
+    network = "homestead";
+  } else if (chainId === 10) {
+    network = "optimism";
+  } else if (chainId === 137) {
+    network = "polygon";
+  } else if (chainId === 1101) {
+    network = "zkevm";
+  } else if (chainId === 42161) {
+    network = "arbitrum";
+  } else {
+    throw new Error("Unsupported chain id");
+  }
+
+  return network;
+};
+
 
 export const getAPIKey = (chainId) => {
   let apiKey;
@@ -111,5 +131,8 @@ export const getAPIKey = (chainId) => {
 };
 
 export const getProvider = (chainId) => {
-  return new AlchemyProvider(chainId, getAPIKey(chainId));
+  return new AlchemyProvider({
+    chainId: chainId,
+    name: getEthNetworkName(chainId),
+  }, getAPIKey(chainId));
 };
