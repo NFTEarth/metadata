@@ -55,7 +55,7 @@ const api = async (req, res) => {
     // Validate indexing method and set up provider
     const method = req.query.method;
     if (
-      !["opensea", "rarible", "alchemy", "simplehash", "centerdev", "soundxyz"].includes(method)
+      !["opensea", "rarible", "alchemy", "nftearth", "simplehash", "centerdev", "soundxyz"].includes(method)
     ) {
       throw new Error("Unknown method");
     }
@@ -64,7 +64,7 @@ const api = async (req, res) => {
     if (method === "rarible") {
       provider = rarible;
     } else if (method === "alchemy") {
-      provider = alchemy;
+      provider = nftearth;
     } else if (method === "nftearth") {
       provider = nftearth;
     } else if (method === "simplehash") {
