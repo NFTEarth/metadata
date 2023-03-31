@@ -64,7 +64,7 @@ const api = async (req, res) => {
     if (method === "rarible") {
       provider = rarible;
     } else if (method === "alchemy") {
-      provider = nftearth;
+      provider = network === 'zkevm' ? nftearth : alchemy;
     } else if (method === "nftearth") {
       provider = nftearth;
     } else if (method === "simplehash") {
