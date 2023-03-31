@@ -19,18 +19,20 @@ const fetchContract = async (chainId, contract) => {
   const contractName = await nftContract.name().catch(() => null);
   const totalSupply = await nftContract.functions.totalSupply().catch(() => null);
   let erc721Metadata = await nftContract.functions.tokenURI(0).catch(() => null);
-  let erc11555Metadata = await nftContract.functions.uri(0).catch(() => null);
-  if (erc721Metadata === null && erc11555Metadata === null) {
+  let erc1155Metadata = await nftContract.functions.uri(0).catch(() => null);
+  if (erc721Metadata === null && erc1155Metadata === null) {
     erc721Metadata = await nftContract.functions.tokenURI(1).catch(() => null);
-    erc11555Metadata = await nftContract.functions.uri(1).catch(() => null);
+    erc1155Metadata = await nftContract.functions.uri(1).catch(() => null);
   }
 
-  logger.info('nfteath-fetcher', {
+  logger.info('nftearth-fetcher', JSON.stringify({
     erc721Metadata,
-    erc11555Metadata
-  })
+    erc1155Metadata,
+    erc721MetadataType: typeof erc721Metadata,
+    erc1155MetadataType: typeof erc1155Metadata,
+  }))
 
-  const metadataUri = (erc721Metadata || erc11555Metadata || '').replace(/^ipfs?:\/\//, 'https://cloudflare-ipfs.com/ipfs/');
+  const metadataUri = (erc721Metadata || erc1155Metadata || '').replace(/^ipfs?:\/\//, 'https://cloudflare-ipfs.com/ipfs/');
 
   const { data } = await axios.get(metadataUri);
 
@@ -56,12 +58,14 @@ const fetchToken = async (chainId, contract, tokenId) => {
 
   const contractName = await nftContract.name().catch(() => null);
   const erc721Metadata = await nftContract.functions.tokenURI(tokenId).catch(() => null);
-  const erc11555Metadata = await nftContract.functions.uri(tokenId).catch(() => null);
-  logger.info('nfteath-fetcher', {
+  const erc1155Metadata = await nftContract.functions.uri(tokenId).catch(() => null);
+  logger.info('nftearth-fetcher', JSON.stringify({
     erc721Metadata,
-    erc11555Metadata
-  })
-  const metadataUri = (erc721Metadata || erc11555Metadata || '').replace(/^ipfs?:\/\//, 'https://cloudflare-ipfs.com/ipfs/');
+    erc1155Metadata,
+    erc721MetadataType: typeof erc721Metadata,
+    erc1155MetadataType: typeof erc1155Metadata,
+  }))
+  const metadataUri = (erc721Metadata || erc1155Metadata || '').replace(/^ipfs?:\/\//, 'https://cloudflare-ipfs.com/ipfs/');
 
   const { data } = await axios.get(metadataUri);
 
