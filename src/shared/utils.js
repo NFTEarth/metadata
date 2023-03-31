@@ -1,4 +1,72 @@
-import { providers } from "ethers";
+import { UrlJsonRpcProvider } from "@ethersproject/providers/lib/url-json-rpc-provider";
+import { showThrottleMessage } from "@ethersproject/providers/lib/formatter";
+import { AlchemyWebSocketProvider } from "@ethersproject/providers/lib/alchemy-provider";
+
+const defaultApiKey = "_gg7wSSi0KMBsdKnGVfHDueq6xMB9EkC"
+
+class AlchemyProvider extends UrlJsonRpcProvider {
+  static getWebSocketProvider(network, apiKey) {
+    return new AlchemyWebSocketProvider(network, apiKey);
+  }
+
+  static getApiKey(apiKey) {
+    if (apiKey == null) { return defaultApiKey; }
+    if (apiKey && typeof(apiKey) !== "string") {
+      logger.throwArgumentError("invalid apiKey", "apiKey", apiKey);
+    }
+    return apiKey;
+  }
+
+  static getUrl(network, apiKey) {
+    let host = null;
+    switch (network.name) {
+      case "homestead":
+        host = "eth-mainnet.alchemyapi.io/v2/";
+        break;
+      case "goerli":
+        host = "eth-goerli.g.alchemy.com/v2/";
+        break;
+      case "zkevm":
+        host = "polygonzkevm-mainnet.g.alchemy.com/v2/";
+        break;
+      case "matic":
+        host = "polygon-mainnet.g.alchemy.com/v2/";
+        break;
+      case "maticmum":
+        host = "polygon-mumbai.g.alchemy.com/v2/";
+        break;
+      case "arbitrum":
+        host = "arb-mainnet.g.alchemy.com/v2/";
+        break;
+      case "arbitrum-goerli":
+        host = "arb-goerli.g.alchemy.com/v2/";
+        break;
+      case "optimism":
+        host = "opt-mainnet.g.alchemy.com/v2/";
+        break;
+      case "optimism-goerli":
+        host = "opt-goerli.g.alchemy.com/v2/"
+        break;
+      default:
+        logger.throwArgumentError("unsupported network", "network", arguments[0]);
+    }
+
+    return {
+      allowGzip: true,
+      url: ("https:/" + "/" + host + apiKey),
+      throttleCallback: (attempt, url) => {
+        if (apiKey === defaultApiKey) {
+          showThrottleMessage();
+        }
+        return Promise.resolve(true);
+      }
+    };
+  }
+
+  isCommunityResource() {
+    return (this.apiKey === defaultApiKey);
+  }
+}
 
 export const getNetworkName = (chainId) => {
   let network;
@@ -40,5 +108,5 @@ export const getAPIKey = (chainId) => {
 };
 
 export const getProvider = (chainId) => {
-  return new providers.AlchemyProvider(chainId, getAPIKey(chainId));
+  return new AlchemyProvider(chainId, getAPIKey(chainId));
 };
