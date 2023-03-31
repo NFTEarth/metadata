@@ -18,20 +18,12 @@ const fetchContract = async (chainId, contract) => {
 
   const contractName = await nftContract.name().catch(() => null);
   const totalSupply = await nftContract.functions.totalSupply().catch(() => null);
-  let erc721Metadata = await nftContract.functions.tokenURI(0).catch(() => null);
-  let erc1155Metadata = await nftContract.functions.uri(0).catch(() => null);
+  let erc721Metadata = await nftContract.functions.tokenURI(0).then(res => res?.[0] || null).catch(() => null);
+  let erc1155Metadata = await nftContract.functions.uri(0).then(res => res?.[0] || null).catch(() => null);
   if (erc721Metadata === null && erc1155Metadata === null) {
-    erc721Metadata = await nftContract.functions.tokenURI(1).catch(() => null);
-    erc1155Metadata = await nftContract.functions.uri(1).catch(() => null);
+    erc721Metadata = await nftContract.functions.tokenURI(1).then(res => res?.[0] || null).catch(() => null);
+    erc1155Metadata = await nftContract.functions.uri(1).then(res => res?.[0] || null).catch(() => null);
   }
-
-  logger.info('nftearth-fetcher', JSON.stringify({
-    erc721Metadata,
-    erc1155Metadata,
-    erc721MetadataType: typeof erc721Metadata,
-    erc1155MetadataType: typeof erc1155Metadata,
-  }))
-
   const metadataUri = (erc721Metadata || erc1155Metadata || '').replace(/^ipfs?:\/\//, 'https://cloudflare-ipfs.com/ipfs/');
 
   const { data } = await axios.get(metadataUri);
@@ -57,14 +49,8 @@ const fetchToken = async (chainId, contract, tokenId) => {
   ]), getProvider(chainId));
 
   const contractName = await nftContract.name().catch(() => null);
-  const erc721Metadata = await nftContract.functions.tokenURI(tokenId).catch(() => null);
-  const erc1155Metadata = await nftContract.functions.uri(tokenId).catch(() => null);
-  logger.info('nftearth-fetcher', JSON.stringify({
-    erc721Metadata,
-    erc1155Metadata,
-    erc721MetadataType: typeof erc721Metadata,
-    erc1155MetadataType: typeof erc1155Metadata,
-  }))
+  const erc721Metadata = await nftContract.functions.tokenURI(tokenId).then(res => res?.[0] || null).catch(() => null);
+  const erc1155Metadata = await nftContract.functions.uri(tokenId).then(res => res?.[0] || null).catch(() => null);
   const metadataUri = (erc721Metadata || erc1155Metadata || '').replace(/^ipfs?:\/\//, 'https://cloudflare-ipfs.com/ipfs/');
 
   const { data } = await axios.get(metadataUri);
