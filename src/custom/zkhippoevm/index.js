@@ -1,10 +1,8 @@
 import axios from "axios";
-import * as opensea from "../../fetchers/opensea";
-import {getCollectionTokenIdRange} from "../async-blueprints";
 
 export const fetchCollection = async (_chainId, { contract, tokenId }) => {
   return {
-    id: `${contract}`,
+    id: contract.toLowerCase(),
     slug: "zkhippoevm",
     name: `zkHippoEVM`,
     metadata: {
