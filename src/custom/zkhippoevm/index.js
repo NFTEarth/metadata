@@ -21,17 +21,6 @@ export const fetchToken = async (chainId, { contract, tokenId }) => {
     .get(`https://cf-ipfs.com/ipfs/QmQvc4FujGqmE5jE7CHCCNovzv1PPfYEsqB8VDFBdMNhfn/${tokenId}.json`)
     .then((response) => response.data);
 
-  const attributesMap = {};
-  const attributes = metadata.attributes.map((a) => {
-    attributesMap[a.trait_type] = a.value;
-    return {
-      key: a.trait_type,
-      value: a.value,
-      kind: "string",
-      rank: 1,
-    };
-  });
-
   return {
     contract,
     tokenId,
@@ -40,6 +29,6 @@ export const fetchToken = async (chainId, { contract, tokenId }) => {
     imageUrl: metadata.image,
     mediaUrl: null,
     flagged: false,
-    attributes,
+    attributes: [],
   };
 };
