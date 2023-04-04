@@ -11,6 +11,7 @@ import * as loot from "./loot";
 import * as soundxyz from "./soundxyz";
 import * as asyncBlueprints from "./async-blueprints";
 import * as zkHippoEVM from "./zkhippoevm";
+import * as hazardsCookies from "./hazards-cookies";
 
 export const hasCustomCollectionHandler = (chainId, contract) =>
   Boolean(customCollection[`${chainId},${contract}`]);
@@ -123,3 +124,7 @@ custom["4,0x79e2d470f950f2cf78eef41720e8ff2cf4b3cd78"] = loot;
 // zkHippoEVM
 customCollection["1101,0xc58b251a21ad4db435365b36a342d7bb42bbe012"] = zkHippoEVM;
 custom["1101,0xc58b251a21ad4db435365b36a342d7bb42bbe012"] = zkHippoEVM;
+
+// hazardsCookies
+customCollection["1101,0xfb09f5fc63acb404c0871f5bed8daac748ae588a"] = hazardsCookies;
+custom["1101,0xfb09f5fc63acb404c0871f5bed8daac748ae588a"] = hazardsCookies;
