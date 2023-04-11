@@ -8,6 +8,12 @@ import { getProvider } from "../shared/utils";
 import { logger } from "../shared/logger";
 import _ from "lodash";
 
+const parseUri = (uri) => {
+  const error = /Error: /.test(uri);
+
+  return error ? null : uri || null
+}
+
 const fetchContract = async (chainId, contract) => {
   const nftContract = new Contract(contract, new Interface([
     "function name() view returns (string)",
@@ -18,11 +24,11 @@ const fetchContract = async (chainId, contract) => {
 
   const contractName = await nftContract.name().catch(() => null);
   const totalSupply = await nftContract.functions.totalSupply().catch(() => null);
-  let erc721Metadata = await nftContract.functions.tokenURI(0).then(res => res?.[0] || null).catch(() => null);
-  let erc1155Metadata = await nftContract.functions.uri(0).then(res => res?.[0] || null).catch(() => null);
-  if (erc721Metadata === null || /Error: /.test(erc721Metadata || '') && erc1155Metadata === null || /Error: /.test(erc1155Metadata || '')) {
-    erc721Metadata = await nftContract.functions.tokenURI(1).then(res => res?.[0] || null).catch(() => null);
-    erc1155Metadata = await nftContract.functions.uri(1).then(res => res?.[0] || null).catch(() => null);
+  let erc721Metadata = await nftContract.functions.tokenURI(0).then(res => parseUri(res?.[0])).catch(() => null);
+  let erc1155Metadata = await nftContract.functions.uri(0).then(res => parseUri(res?.[0])).catch(() => null);
+  if (erc721Metadata === null && erc1155Metadata === null) {
+    erc721Metadata = await nftContract.functions.tokenURI(1).then(res => parseUri(res?.[0])).catch(() => null);
+    erc1155Metadata = await nftContract.functions.uri(1).then(res => parseUri(res?.[0])).catch(() => null);
   }
   const metadataUri = (erc721Metadata || erc1155Metadata || '').replace(/^ipfs?:\/\//, 'https://cloudflare-ipfs.com/ipfs/');
 
@@ -49,8 +55,8 @@ const fetchToken = async (chainId, contract, tokenId) => {
   ]), getProvider(chainId));
 
   const contractName = await nftContract.name().catch(() => null);
-  const erc721Metadata = await nftContract.functions.tokenURI(tokenId).then(res => res?.[0] || null).catch(() => null);
-  const erc1155Metadata = await nftContract.functions.uri(tokenId).then(res => res?.[0] || null).catch(() => null);
+  const erc721Metadata = await nftContract.functions.tokenURI(tokenId).then(res => parseUri(res?.[0])).catch(() => null);
+  const erc1155Metadata = await nftContract.functions.uri(tokenId).then(res => parseUri(res?.[0])).catch(() => null);
   const metadataUri = (erc721Metadata || erc1155Metadata || '').replace(/^ipfs?:\/\//, 'https://cloudflare-ipfs.com/ipfs/');
   const { data } = await axios.get(metadataUri);
 
