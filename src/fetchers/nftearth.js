@@ -20,7 +20,7 @@ const fetchContract = async (chainId, contract) => {
   const totalSupply = await nftContract.functions.totalSupply().catch(() => null);
   let erc721Metadata = await nftContract.functions.tokenURI(0).then(res => res?.[0] || null).catch(() => null);
   let erc1155Metadata = await nftContract.functions.uri(0).then(res => res?.[0] || null).catch(() => null);
-  if (erc721Metadata === null && erc1155Metadata === null) {
+  if (erc721Metadata === null || /Error: /.test(erc721Metadata || '') && erc1155Metadata === null || /Error: /.test(erc1155Metadata || '')) {
     erc721Metadata = await nftContract.functions.tokenURI(1).then(res => res?.[0] || null).catch(() => null);
     erc1155Metadata = await nftContract.functions.uri(1).then(res => res?.[0] || null).catch(() => null);
   }
