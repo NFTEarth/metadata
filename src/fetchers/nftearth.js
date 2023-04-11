@@ -30,7 +30,7 @@ const fetchContract = async (chainId, contract) => {
     erc721Metadata = await nftContract.functions.tokenURI(1).then(res => parseUri(res?.[0])).catch(() => null);
     erc1155Metadata = await nftContract.functions.uri(1).then(res => parseUri(res?.[0])).catch(() => null);
   }
-  const metadataUri = (erc721Metadata || erc1155Metadata || '').replace(/^ipfs?:\/\//, 'https://cloudflare-ipfs.com/ipfs/');
+  const metadataUri = (erc721Metadata || erc1155Metadata || '').replace(/^ipfs?:\/\//, 'https://ipfs.io/ipfs/');
 
   const { data } = await axios.get(metadataUri);
 
@@ -40,7 +40,7 @@ const fetchContract = async (chainId, contract) => {
     name: contractName || data.name,
     description: data.description,
     totalSupply: totalSupply,
-    imageUrl: (data.image || '').replace(/^ipfs?:\/\//, 'https://cloudflare-ipfs.com/ipfs/'),
+    imageUrl: (data.image || '').replace(/^ipfs?:\/\//, 'https://ipfs.io/ipfs/'),
     externalUrl: data?.external_url,
     kind: erc721Metadata ? 'ERC721' : 'ERC1155'
   };
@@ -57,7 +57,7 @@ const fetchToken = async (chainId, contract, tokenId) => {
   const contractName = await nftContract.name().catch(() => null);
   const erc721Metadata = await nftContract.functions.tokenURI(tokenId).then(res => parseUri(res?.[0])).catch(() => null);
   const erc1155Metadata = await nftContract.functions.uri(tokenId).then(res => parseUri(res?.[0])).catch(() => null);
-  const metadataUri = (erc721Metadata || erc1155Metadata || '').replace(/^ipfs?:\/\//, 'https://cloudflare-ipfs.com/ipfs/');
+  const metadataUri = (erc721Metadata || erc1155Metadata || '').replace(/^ipfs?:\/\//, 'https://ipfs.io/ipfs/');
   const { data } = await axios.get(metadataUri);
 
   return {
